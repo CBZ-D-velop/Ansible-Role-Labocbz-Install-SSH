@@ -1,0 +1,72 @@
+---
+- name: "Install packages"
+  notify: "Enable and start SSH"
+  ansible.builtin.package:
+    update_cache: true
+    name:
+      - ssh
+      - cron
+
+- name: "Configure SSH"
+  notify: "Restart SSH"
+  block:
+    - name: "Import SSH configurations"
+      loop:
+        - { src: "templates/banner.j2", dest: "/etc/issue.net"}
+        - { src: "templates/banner.j2", dest: "/etc/issue"}
+        - { src: "templates/sshd_config.j2", dest: "/etc/ssh/sshd_config"}
+      loop_control:
+        loop_var: file
+      ansible.builtin.template:
+        src: "{{ file.src }}"
+        dest: "{{ file.dest }}"
+        mode: 0700
+
+    - name: "Check if sockets.target.wants exist"
+      register: sockets
+      ansible.builtin.stat:
+        path: "/etc/systemd/system/sockets.target.wants/ssh.socket"
+
+    - name: "Handle an unpresent sockets.target.wants"
+      when: not sockets.stat.exists
+      block:
+        - name: "Create directory sockets.target.wants if not exist"
+          ansible.builtin.file:
+            path: "/etc/systemd/system/sockets.target.wants"
+            state: directory
+            mode: 0700
+            modification_time: preserve
+            access_time: preserve
+            recurse: yes
+
+        - name: "Touch service file if not exist"
+          ansible.builtin.file:
+            path: "/etc/systemd/system/sockets.target.wants/ssh.socket"
+            state: touch
+            mode: 0700
+            modification_time: preserve
+            access_time: preserve
+
+    - name: "Import SSH socket file"
+      ansible.builtin.template:
+        src: "templates/ssh.socket.j2"
+        dest: "/etc/systemd/system/sockets.target.wants/ssh.socket"
+        mode: 0700
+
+- name: "Configure a special workaround"
+  notify: "Restart SSH"
+  when: ssh_create_cron_start_at_boot and ssh_restart_after_boot_time is defined
+  block:
+    - name: "Check if a cron file exist"
+      register: cron_file
+      ansible.builtin.stat:
+        path: "/etc/cron.d/ansible_start_ssh_{{ ssh_restart_after_boot_time }}_sec_after_boot"
+
+    - name: "Creates a cron file under /etc/cron.d (to start ssh after boot in some special cases ...)"
+      when: not cron_file.stat.exists
+      ansible.builtin.cron:
+        name: "ansible - start SSH {{ ssh_restart_after_boot_time }} sec after boot"
+        special_time: "reboot"
+        user: "root"
+        job: "sleep {{ ssh_restart_after_boot_time }} && service ssh start"
+        cron_file: "ansible_start_ssh_{{ ssh_restart_after_boot_time }}_sec_after_boot"

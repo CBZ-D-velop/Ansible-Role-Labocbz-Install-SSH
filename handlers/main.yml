@@ -1,0 +1,16 @@
+---
+- name: "Enable and start SSH"
+  register: ssh_service_status
+  changed_when: ssh_service_status.state != "started"
+  ansible.builtin.service:
+    name: "ssh"
+    state: "started"
+    enabled: yes
+
+- name: "Restart SSH"
+  register: ssh_service_status
+  changed_when: ssh_service_status.state != "restarted"
+  ansible.builtin.service:
+    name: "ssh"
+    state: "restarted"
+    daemon_reload: true
