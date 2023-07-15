@@ -4,8 +4,8 @@
   ansible.builtin.package:
     update_cache: true
     name:
-      - ssh
-      - cron
+      - "ssh"
+      - "cron"
 
 - name: "Configure SSH"
   notify: "Restart SSH"
@@ -20,7 +20,7 @@
       ansible.builtin.template:
         src: "{{ file.src }}"
         dest: "{{ file.dest }}"
-        mode: 0700
+        mode: "0700"
 
     - name: "Check if sockets.target.wants exist"
       register: sockets
@@ -34,7 +34,7 @@
           ansible.builtin.file:
             path: "/etc/systemd/system/sockets.target.wants"
             state: directory
-            mode: 0700
+            mode: "0700"
             modification_time: preserve
             access_time: preserve
             recurse: yes
@@ -43,7 +43,7 @@
           ansible.builtin.file:
             path: "/etc/systemd/system/sockets.target.wants/ssh.socket"
             state: touch
-            mode: 0700
+            mode: "0700"
             modification_time: preserve
             access_time: preserve
 
@@ -51,11 +51,11 @@
       ansible.builtin.template:
         src: "templates/ssh.socket.j2"
         dest: "/etc/systemd/system/sockets.target.wants/ssh.socket"
-        mode: 0700
+        mode: "0700"
 
 - name: "Configure a special workaround"
   notify: "Restart SSH"
-  when: ssh_create_cron_start_at_boot and ssh_restart_after_boot_time is defined
+  when: (ssh_create_cron_start_at_boot | default(false)) and (ssh_restart_after_boot_time | default(false))
   block:
     - name: "Check if a cron file exist"
       register: cron_file

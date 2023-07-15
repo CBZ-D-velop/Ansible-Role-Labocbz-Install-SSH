@@ -15,19 +15,9 @@
 
 An Ansible role to install SSH and import your configuration.
 
-The Ansible role for SSH configuration automates the setup and management of SSH access to your system. This role utilizes several variables to customize the SSH configuration.
+The Ansible role installs and configures SSH on a target system, providing customizable settings for secure access. The role allows defining allowed groups for SSH access, specifying the SSH port to use, and importing a custom banner for the SSH login prompt.
 
-The variable "ssh_allowed_groups" specifies the groups that are allowed SSH access. In this example, the "root" group is allowed SSH access. You can modify this list to include other groups as needed.
-
-The variable "ssh_port" defines the SSH port number. By default, it is set to port 22, which is the standard SSH port. You can change this value if you have configured SSH to use a different port.
-
-To ensure SSH service starts at boot, the variable "ssh_create_cron_start_at_boot" is set to true. This will create a cron job that starts the SSH service automatically when the system boots.
-
-The "ssh_restart_after_boot_time" variable determines the delay, in seconds, before the SSH service is restarted after the system boots. In this example, it is set to 10 seconds. Adjust this value according to your specific requirements.
-
-Lastly, the "ssh_administration_name" variable allows you to specify the name of your company or organization for administrative purposes. In this example, it is set to "your company".
-
-Using this Ansible role for SSH configuration, you can easily manage SSH access, define the SSH port, ensure SSH service starts at boot, configure the restart delay, and specify your company name for administrative purposes.
+It also offers the option to request a cron job that restarts the SSH service after the system boots. This ensures the SSH service runs smoothly even after reboots. The role is designed to handle the installation, configuration, and security of SSH on the target system while providing customization to meet specific security and operational requirements.
 
 ## Folder structure
 
