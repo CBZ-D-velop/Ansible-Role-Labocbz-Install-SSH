@@ -16,14 +16,14 @@
 # possible, but leave them commented.  Uncommented options override the
 # default value.
 
-Port {{ ssh_port }}
+Port {{ install_ssh__port }}
 #AddressFamily any
 #ListenAddress 0.0.0.0
 #ListenAddress ::
 
-#HostKey /etc/ssh/ssh_host_rsa_key
-#HostKey /etc/ssh/ssh_host_ecdsa_key
-#HostKey /etc/ssh/ssh_host_ed25519_key
+#HostKey /etc/ssh/install_ssh__host_rsa_key
+#HostKey /etc/ssh/install_ssh__host_ecdsa_key
+#HostKey /etc/ssh/install_ssh__host_ed25519_key
 
 # Ciphers and keying
 #RekeyLimit default none
@@ -50,7 +50,7 @@ MaxSessions 2
 #AuthorizedKeysCommand none
 #AuthorizedKeysCommandUser nobody
 
-# For this to work you will also need host keys in /etc/ssh/ssh_known_hosts
+# For this to work you will also need host keys in /etc/ssh/install_ssh__known_hosts
 #HostbasedAuthentication no
 # Change to yes if you don't trust ~/.ssh/known_hosts for
 # HostbasedAuthentication
@@ -129,4 +129,4 @@ Subsystem sftp  /usr/lib/openssh/sftp-server
 #       ForceCommand cvs server
 PasswordAuthentication yes
 
-AllowGroups {% for group in ssh_allowed_groups %}{{ group }} {% endfor %}
+AllowGroups {% for group in install_ssh__allowed_groups %}{{ group }} {% endfor %}

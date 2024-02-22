@@ -102,14 +102,14 @@ Some vars a required to run this role:
 
 ```YAML
 ---
-ssh_allowed_groups:
+install_ssh__allowed_groups:
   - "root"
 
-ssh_port: 22
+install_ssh__port: 22
 
-ssh_create_cron_start_at_boot: true
-ssh_restart_after_boot_time: 10
-ssh_administration_name: "your company"
+install_ssh__create_cron_start_at_boot: true
+install_ssh__restart_after_boot_time: 10
+install_ssh__administration_name: "your company"
 
 ```
 
@@ -122,9 +122,9 @@ In order to surchage vars, you have multiples possibilities but for mains cases 
 ```YAML
 # From inventory
 ---
-inv_ssh_administration_name: "My Compagny"
+inv_install_ssh__administration_name: "My Compagny"
 
-inv_ssh_port: 23
+inv_install_ssh__port: 23
 
 ```
 
@@ -143,8 +143,8 @@ To run this role, you can copy the molecule/default/converge.yml playbook and ad
     tags:
     - "labocbz.install_ssh"
     vars:
-    ssh_port: "{{ inv_ssh_port }}"
-    ssh_administration_name: "{{ inv_ssh_administration_name }}"
+    install_ssh__port: "{{ inv_install_ssh__port }}"
+    install_ssh__administration_name: "{{ inv_install_ssh__administration_name }}"
     ansible.builtin.include_role:
     name: "labocbz.install_ssh"
 ```
@@ -163,6 +163,13 @@ Here you can put your change to keep a trace of your work and decisions.
 * Molecule now use remote Docker image by Lord Robin Crombez
 * Molecule now use custom Docker image in CI/CD by env vars
 * New CICD with needs and optimization
+
+### 2024-02-22: New support
+
+* New CI
+* Added Sonarqube
+* Added support for Debian 12/11
+* Added support for Ubuntu 22
 
 ## Authors
 

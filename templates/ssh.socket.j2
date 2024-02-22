@@ -11,7 +11,7 @@ Conflicts=ssh.service
 ConditionPathExists=!/etc/ssh/sshd_not_to_be_run
 
 [Socket]
-ListenStream={{ ssh_port }}
+ListenStream={{ install_ssh__port }}
 Accept=yes
 [Install]
 WantedBy=sockets.target
