@@ -21,6 +21,8 @@
         src: "{{ file.src }}"
         dest: "{{ file.dest }}"
         mode: "0700"
+        group: "root"
+        owner: "root"
 
     - name: "Check if sockets.target.wants exist"
       register: sockets
@@ -35,6 +37,8 @@
             path: "/etc/systemd/system/sockets.target.wants"
             state: directory
             mode: "0700"
+            group: "root"
+            owner: "root"
             modification_time: preserve
             access_time: preserve
             recurse: yes
@@ -44,6 +48,8 @@
             path: "/etc/systemd/system/sockets.target.wants/ssh.socket"
             state: touch
             mode: "0700"
+            group: "root"
+            owner: "root"
             modification_time: preserve
             access_time: preserve
 
@@ -52,21 +58,5 @@
         src: "templates/ssh.socket.j2"
         dest: "/etc/systemd/system/sockets.target.wants/ssh.socket"
         mode: "0700"
-
-- name: "Configure a special workaround"
-  notify: "Restart SSH"
-  when: (ssh_create_cron_start_at_boot | default(false)) and (ssh_restart_after_boot_time | default(false))
-  block:
-    - name: "Check if a cron file exist"
-      register: cron_file
-      ansible.builtin.stat:
-        path: "/etc/cron.d/ansible_start_ssh_{{ ssh_restart_after_boot_time }}_sec_after_boot"
-
-    - name: "Creates a cron file under /etc/cron.d (to start ssh after boot in some special cases ...)"
-      when: not cron_file.stat.exists
-      ansible.builtin.cron:
-        name: "ansible - start SSH {{ ssh_restart_after_boot_time }} sec after boot"
-        special_time: "reboot"
-        user: "root"
-        job: "sleep {{ ssh_restart_after_boot_time }} && service ssh start"
-        cron_file: "ansible_start_ssh_{{ ssh_restart_after_boot_time }}_sec_after_boot"
+        group: "root"
+        owner: "root"

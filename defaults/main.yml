@@ -1,9 +1,9 @@
 ---
-ssh_allowed_groups:
+install_ssh__allowed_groups:
   - "root"
 
-ssh_port: 22
+install_ssh__port: 22
 
-ssh_create_cron_start_at_boot: true
-ssh_restart_after_boot_time: 10
-ssh_administration_name: "your company"
+install_ssh__create_cron_start_at_boot: true
+install_ssh__restart_after_boot_time: 10
+install_ssh__administration_name: "your company"

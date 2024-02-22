@@ -1,19 +1,13 @@
 ---
 - name: "Converge"
-  hosts: "all"
+  hosts: "cicd-debian-11"
   tasks:
-    # replace these tasks with whatever you find suitable to test
-    - name: "Copy something to test use of synchronize module"
-      ansible.builtin.copy:
-        src: "/etc/hosts"
-        dest: "/tmp/hosts-from-controller"
-        mode: 0700
 
     - name: "Include labocbz.install_ssh"
       tags:
         - "labocbz.install_ssh"
       vars:
-        ssh_port: "{{ inv_ssh_port }}"
-        ssh_administration_name: "{{ inv_ssh_administration_name }}"
+        install_ssh__port: "{{ inv_install_ssh__port }}"
+        install_ssh__administration_name: "{{ inv_install_ssh__administration_name }}"
       ansible.builtin.include_role:
         name: "labocbz.install_ssh"
